@@ -268,6 +268,7 @@
         // internationalization
         i18n: {
             previousMonth : 'Previous Month',
+			today         : 'Today',
             nextMonth     : 'Next Month',
             months        : ['January','February','March','April','May','June','July','August','September','October','November','December'],
             weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -457,6 +458,11 @@
             next = false;
         }
 
+        var today = new Date();
+        if ((!opts.minDate || today >= opts.minDate) && (!opts.maxDate || today <= opts.maxDate)) {
+            html += '<button class="pika-goto-today" type="button">' + opts.i18n.today + '</button>';
+		}
+
         if (c === 0) {
             html += '<button class="pika-prev' + (prev ? '' : ' is-disabled') + '" type="button">' + opts.i18n.previousMonth + '</button>';
         }
@@ -506,6 +512,16 @@
                 }
                 else if (hasClass(target, 'pika-prev')) {
                     self.prevMonth();
+                }
+                else if (hasClass(target, 'pika-goto-today')) {
+                    self.gotoToday();
+                    self.setDate(new Date());
+                    if (opts.bound) {
+                        sto(function() {
+                            self.hide();
+                        }, 100);
+                    }
+                    return;
                 }
                 else if (hasClass(target, 'pika-next')) {
                     self.nextMonth();
